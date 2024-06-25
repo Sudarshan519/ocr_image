@@ -10,8 +10,8 @@ def getStatus(image):
     cropped_region = image[250:crop_height, 70:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',
     lang='jpn') 
-    print(data)
-    cv2.imshow("Status", cropped_region)
+    # print(data)
+    # cv2.imshow("Status", cropped_region)
     return data
 
 def peroid_of_stay(image):
@@ -19,8 +19,8 @@ def peroid_of_stay(image):
     crop_height = 390
     cropped_region = image[340:crop_height, 200:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn') 
-    print(data)
-    cv2.imshow("Peroid of Stay", cropped_region)
+    # print(data)
+    # cv2.imshow("Peroid of Stay", cropped_region)
     return data
 
 
@@ -29,8 +29,8 @@ def delivery_date(image):
     crop_height = 470
     cropped_region = image[420:crop_height, 100:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn') 
-    print(data)
-    cv2.imshow("Peroid of Stay", cropped_region)
+    # print(data)
+    # cv2.imshow("Peroid of Stay", cropped_region)
     return data
 
 def expiry_date(image):
@@ -38,7 +38,7 @@ def expiry_date(image):
     crop_height = 550
     cropped_region = image[470:crop_height, 100:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn') 
-    print(data)
+    # print(data)
     cv2.imshow("Expiry Date", cropped_region)
     return data
 
@@ -60,7 +60,7 @@ def getDob(image):
     crop_height = 150 
     cropped_region = image[80:crop_height, 70:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn')  
-    cv2.imshow("DOB", cropped_region)
+    # cv2.imshow("DOB", cropped_region)
     return data
 def getAddress(image): 
     crop_length = 480
