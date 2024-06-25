@@ -89,7 +89,7 @@ def getCardNumber(image):
     cv2.imshow("Card Number", cropped_region)
     return data
     # card name
-def crop_and_display(image_path): 
+def crop_and_display(): 
     image = cv2.imread(image_path) 
     card_data={}
     card_data['card_number']=getCardNumber(image)
@@ -107,7 +107,7 @@ def crop_and_display(image_path):
 # text_boxes = localize_text(image_path)
 # # print("Text boxes coordinates:", text_boxes)
 
-print(crop_and_display(image_path))
+# print(crop_and_display(image_path))
 
 
 # def perform_ocr(image, text_boxes):
