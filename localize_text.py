@@ -2,22 +2,27 @@ import cv2
 import pytesseract
 
 # Example usage
-image_path = './cropped_card.jpg'
+image_path = '/icropped_card.jpg'
 
 def getStatus(image):
-    crop_length = 320
-    crop_height = 300
-    cropped_region = image[250:crop_height, 70:crop_length]
-    data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',
+    crop_length = 300
+    crop_height = 380
+    cropped_region = image[300:crop_height, 80:crop_length]
+        # Convert cropped region to grayscale
+    gray = cv2.cvtColor(cropped_region, cv2.COLOR_BGR2GRAY)
+    
+    # Apply Gaussian blur
+    blurred_image = cv2.GaussianBlur(gray, (3, 3), 0)
+    data= pytesseract.image_to_string(blurred_image,       config='--oem 3 --psm 6',
     lang='jpn') 
     # print(data)
-    # cv2.imshow("Status", cropped_region)
+    cv2.imshow("Status", blurred_image)
     return data
 
 def peroid_of_stay(image):
-    crop_length = 560
-    crop_height = 390
-    cropped_region = image[340:crop_height, 200:crop_length]
+    crop_length = 640
+    crop_height = 450
+    cropped_region = image[390:crop_height, 200:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn') 
     # print(data)
     # cv2.imshow("Peroid of Stay", cropped_region)
@@ -25,21 +30,21 @@ def peroid_of_stay(image):
 
 
 def delivery_date(image):
-    crop_length = 560
-    crop_height = 470
-    cropped_region = image[420:crop_height, 100:crop_length]
+    crop_length = 800
+    crop_height = 450
+    cropped_region = image[400:crop_height, 320:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn') 
     # print(data)
-    # cv2.imshow("Peroid of Stay", cropped_region)
+    cv2.imshow("Delivery of Stay", cropped_region)
     return data
 
 def expiry_date(image):
-    crop_length = 560
-    crop_height = 550
-    cropped_region = image[470:crop_height, 100:crop_length]
+    crop_length = 600
+    crop_height = 640
+    cropped_region = image[540:crop_height, 190:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn') 
     # print(data)
-    cv2.imshow("Expiry Date", cropped_region)
+    # cv2.imshow("Expiry Date", cropped_region)
     return data
 
 
@@ -57,23 +62,23 @@ def localize_text(image_path):
     return text_boxes
 def getDob(image):
     crop_length = 320
-    crop_height = 150 
-    cropped_region = image[80:crop_height, 70:crop_length]
+    crop_height = 200 
+    cropped_region = image[120:crop_height, 80:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',lang='jpn')  
     # cv2.imshow("DOB", cropped_region)
     return data
 def getAddress(image): 
-    crop_length = 480
-    crop_height = 230 
-    cropped_region = image[165:crop_height, 40:crop_length]
+    crop_length = 540
+    crop_height = 280 
+    cropped_region = image[200:crop_height, 40:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',
     lang='jpn')  
-    cv2.imshow("ADDRESS", cropped_region)
+    # cv2.imshow("ADDRESS", cropped_region)
     return data
 def getName(image): 
-    crop_length = 480
-    crop_height = 100 
-    cropped_region = image[50:crop_height, 70:crop_length]
+    crop_length = 580
+    crop_height = 120 
+    cropped_region = image[75:crop_height, 70:crop_length]
     data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',
     lang='jpn')  
     # cv2.imshow("NAME", cropped_region)
@@ -81,16 +86,50 @@ def getName(image):
 
 
 def getCardNumber(image):
-    crop_length = 830
+    # Load image
+    # image_path = 'zOCR/rcs/r28a/icropped_card.jpg'
+    # image = cv2.imread(image_path)
+    
+    # Define crop region and crop
+ 
+    # Define crop region and crop
+    crop_length = 980
     crop_height = 80 
-    cropped_region = image[0:crop_height, 540:crop_length]
-    data= pytesseract.image_to_string(cropped_region,       config='--oem 3 --psm 6',
-    lang='jpn')  
-    cv2.imshow("Card Number", cropped_region)
+    cropped_region = image[0:crop_height, 640:crop_length]
+    
+    # Convert cropped region to grayscale
+    gray = cv2.cvtColor(cropped_region, cv2.COLOR_BGR2GRAY)
+    
+    # Apply Gaussian blur
+    blurred_image = cv2.GaussianBlur(gray, (3, 3), 0)
+    
+    # Apply binary thresholding
+    _, thresh_image = cv2.threshold(blurred_image, 127, 255, cv2.THRESH_BINARY)
+    
+    # Find contours
+    contours, _ = cv2.findContours(thresh_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Draw contours on the grayscale image
+    cv2.drawContours(gray, contours, -1, (0, 255, 0), 2)  # -1 means draw all contours, thickness is 2
+    # Denoise the image
+    denoised_image = cv2.fastNlMeansDenoising(cropped_region, h=10)
+    # Display the preprocessed image with contours
+    cv2.imshow('Preprocessed Image', denoised_image)
+    
+    # Perform OCR on the preprocessed image
+    data = pytesseract.image_to_string(blurred_image, config='--oem 3 --psm 6', lang='jpn')
+    
+    # Print the extracted text
+    print("Extracted Card Number:", data)
+    
+    
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    
     return data
     # card name
-def crop_and_display(): 
-    image = cv2.imread(image_path) 
+def crop_and_display(path): 
+    image = cv2.imread(path+image_path) 
     card_data={}
     card_data['card_number']=getCardNumber(image)
     card_data['name']=getName(image) 
@@ -98,10 +137,11 @@ def crop_and_display():
     card_data['address']=getAddress(image)
     card_data['dob']=getDob(image)
     card_data['status']= getStatus(image)
-    card_data['peroid_of_stay']=peroid_of_stay(image)   
+    card_data['peroid_of_stay']=peroid_of_stay(image)  
+    card_data['delivery_date']=delivery_date(image) 
     card_data['expiry_date']=expiry_date(image)   
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     return card_data
 
 # text_boxes = localize_text(image_path)

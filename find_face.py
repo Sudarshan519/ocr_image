@@ -2,7 +2,7 @@ import cv2
 
 
 # Load the image
-def find_face(imagePath): 
+def find_face(imagePath,newpath): 
     image = cv2.imread(imagePath)
     # image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB for displaying with matplotlib
 
@@ -29,11 +29,11 @@ def find_face(imagePath):
     if largest_face is not None:
         x, y, w, h = largest_face
         # Crop the largest face region from the original image
-        largest_face_image = image[y:y+h, x:x+w]
+        largest_face_image = image[y-40:y+h+40, x-10:x+w+10]
 
         # Display the largest face using matplotlib
         # plt.imshow(cv2.cvtColor(largest_face_image, cv2.COLOR_BGR2RGB))
-        cv2.imwrite('face3.jpg', largest_face_image)
+        cv2.imwrite(newpath+'/face3.jpg', largest_face_image)
         
         # plt.axis('off')  # Turn off axis numbers and ticks
         # plt.title('Largest Face')
@@ -41,4 +41,5 @@ def find_face(imagePath):
        
     else:
         print("No faces detected or unable to determine the largest face.")
- 
+
+# find_face('zOCR/R14a.jpg')

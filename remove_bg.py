@@ -2,14 +2,15 @@ import cv2
 import numpy as np
 
 # Path to your image file
-image_path = './removed.jpg'
+# image_path = './removed.jpg'
 
 
-def resizeImg(image):
+def resizeImg(image,newpath):
     def resize_to_fixed_card_size(image_path, card_width_mm=85.60, card_height_mm=53.98, dpi=300):
         card_width_px = int(card_width_mm * dpi / 25.4)  # mm to inches to pixels
         card_height_px = int(card_height_mm * dpi / 25.4)
-        
+        print(card_width_px)
+        print(card_height_px)
         # Load the image
         # image = cv2.imread(image_path)
         
@@ -18,14 +19,14 @@ def resizeImg(image):
         
         # Display the resized image
         # cv2.imshow("Resized Image", resized_image)
-        # cv2.imwrite('cropped_card.jpg', card_cropped)
+        cv2.imwrite(newpath+'/icropped_card.jpg', resized_image)
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         return resized_image
 
     # Load image
     # Load image
-    image = cv2.imread(image_path)
+    image = cv2.imread(newpath+'/removed.jpg')
     original_image = image.copy()  # Make a copy for visualization
 
     # Convert image to grayscale
@@ -35,11 +36,11 @@ def resizeImg(image):
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
     # Perform edge detection using Canny
-    edges = cv2.Canny(blurred, 50, 150)
+    # edges = cv2.Canny(blurred, 50, 150)
 
     # Find contours in the edged image
-    contours, _ = cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+    contours, _ = cv2.findContours(gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
     # Initialize variables to store largest contour and its bounding box
     largest_contour = None
     max_area = 0
@@ -62,7 +63,7 @@ def resizeImg(image):
     if largest_contour is not None:
         # Convert the largest contour back to integer coordinates and draw it on the original image
         largest_contour = largest_contour.reshape(-1, 2).astype(np.int32)
-        cv2.drawContours(original_image, [largest_contour], -1, (0, 255, 0), 2)
+        # cv2.drawContours(original_image, [largest_contour], -1, (0, 255, 0), 2)
         
         # Get bounding box of the largest contour
         x, y, w, h = cv2.boundingRect(largest_contour)
